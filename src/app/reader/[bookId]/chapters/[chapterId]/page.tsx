@@ -18,7 +18,7 @@ const ChapterIdPage = async ({
         redirect('/');
     }
     return (
-    <div className="flex items-center justify-center p-10">
+    <div className="flex items-center justify-center p-10 md:p-2">
         <Preview 
             value={chapter.content || ""}
         />
