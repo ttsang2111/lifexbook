@@ -1,0 +1,58 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    // Uses connection pooling
+    url = env("POSTGRES_PRISMA_URL")
+    // Uses direct connection, ⚠️ make sure to keep this to `POSTGRES_URL_NON_POOLING`
+    // or you'll have dangling databases from migrations
+    directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Book {
+  id String @id @default(uuid())
+  userId String
+  name String
+  description String? @db.Text
+  imageUrl String? @db.Text
+  isPublished Boolean @default(false)
+
+  chapters Chapter[]
+  attachments Attachment[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Chapter {
+  id String @id @default(uuid())
+  title String
+  description String? @db.Text
+  content String? @db.Text()
+  position Int
+  isPublished Boolean @default(false)
+
+  bookId String
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bookId])
+}
+
+model Attachment {
+  id String @id @default(uuid())
+  name String
+  url String @db.Text
+
+  bookId String
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bookId])
+}
