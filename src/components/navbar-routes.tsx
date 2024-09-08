@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { LogOut, Plus } from "lucide-react";
 
 const NavbarRoutes = () => {
     const pathname = usePathname();
@@ -11,7 +11,7 @@ const NavbarRoutes = () => {
     const isCreatorPage = pathname?.startsWith('/creator');
     const isReaderPage = pathname?.startsWith('/reader');
     return (
-        <>
+        <>  
             <div className="flex gap-x-2 ml-auto">
                 {isCreatorPage || isReaderPage ?
                     (
@@ -25,6 +25,7 @@ const NavbarRoutes = () => {
                     (
                         <Link href="/creator/books">
                             <Button variant="ghost" className="font-semibold">
+                                <Plus className="h-4 w-4 mr-2" />
                                 Creator
                             </Button>
                         </Link>
