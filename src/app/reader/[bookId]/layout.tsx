@@ -45,7 +45,7 @@ const ReaderBookId = async ({
                     book={book}
                 />
             </div>
-            <main className="md:pl-80 pt-[80px] bg-white h-full">
+            <main className="md:pl-80 pt-[80px] h-full">
                 <ScrollToTopButton />
                 {children}
             </main>
