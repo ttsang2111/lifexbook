@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import BookNavbar from "./_components/book-navbar";
 import BookSidebar from "./_components/book-sidebar";
+import ScrollToTopButton from "@/components/scroll-to-top-button";
 
 const ReaderBookId = async ({
     children,
@@ -44,7 +45,8 @@ const ReaderBookId = async ({
                     book={book}
                 />
             </div>
-            <main className="md:pl-80 pt-[80px] h-full">
+            <main className="md:pl-80 pt-[80px] bg-white h-full">
+                <ScrollToTopButton />
                 {children}
             </main>
         </div>
