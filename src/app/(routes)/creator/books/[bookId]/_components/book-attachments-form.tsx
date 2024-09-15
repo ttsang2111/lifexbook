@@ -1,32 +1,29 @@
 "use client";
 import axios from "axios";
-import { Book } from "@prisma/client";
+import { Book, Attachment } from "@prisma/client";
 
 import { z } from "zod";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { FileUpload } from "@/components/file-upload";
-import { Pencil, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 
-interface BookImageFormProps {
-    initialData: Book;
+interface BookAttachmentsFormProps {
+    initialData: Book & { attachments: Attachment[] };
     bookId: string;
 }
 
 const formSchema = z.object({
-    imageUrl: z.string().min(1, {
-        message: "Image is required",
-    }),
+    url: z.string().min(1),
 })
 
-const BookImageForm = ({
+const BookAttachmentsForm = ({
     initialData,
     bookId
-}: BookImageFormProps) => {
+}: BookAttachmentsFormProps) => {
     const [isEditting, setIsEditting] = useState(false);
     const router = useRouter();
 
@@ -34,7 +31,7 @@ const BookImageForm = ({
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            await axios.patch(`/api/books/${bookId}`, values);
+            await axios.post(`/api/books/${bookId}/attachments`, values);
             toast.success("Book updated");
             toggleEditting();
             router.refresh();
@@ -47,31 +44,25 @@ const BookImageForm = ({
     return (
         <div className="relative border bg-slate-100 rounded-md p-4">
             <div className="font-medium flex items-center justify-between">
-                Book image
+                Book attachments
                 <Button variant="ghost" onClick={toggleEditting}>
+                    {!isEditting && (
+                        <>
+                            <PlusCircle className="h-4 w-4 mr-2"/>
+                            Add an attachment
+                        </>
+                    )}
                     {isEditting && (<>Cancel</>)}
-                    {!isEditting && !initialData.imageUrl && (
-                        <>
-                            <PlusCircle className="h-4 w-4 mr-2" />
-                            Add an image
-                        </>
-                    )}
-                    {!isEditting && initialData.imageUrl && (
-                        <>
-                            <Pencil className="h-4 w-4 mr-2" />
-                            Edit image
-                        </>
-                    )}
                 </Button>
             </div>
             <div>
                 {isEditting && (
                     <div>
                         <FileUpload
-                            endpoint="bookImage"
+                            endpoint="bookAttachment"
                             onChange={(url) => {
                                 if (url) {
-                                    onSubmit({ imageUrl: url });
+                                    onSubmit({ url });
                                 }
                             }}
                         />
@@ -80,17 +71,23 @@ const BookImageForm = ({
                         </div>
                     </div>
                 )}
-                {!isEditting && !initialData.imageUrl && (
-                    <p className="text-slate-500 italic text-sm mt-2">No image</p>
+                {!isEditting && initialData.attachments.length === 0 && (
+                    <p className="text-slate-500 italic text-sm mt-2">
+                        No attachments
+                    </p>
+
                 )}
-                {!isEditting && initialData.imageUrl && (
-                    <div className="relative aspect-video mt-2">
-                        <Image
-                            alt="Upload"
-                            src={initialData.imageUrl}
-                            fill
-                            className="object-cover rounded-md"
-                        />
+                {!isEditting && initialData.attachments.length > 0 && (
+                    <div className="space-y-2">
+                        {initialData.attachments.map((attachment) => (
+                            <div key={attachment.id} 
+                                className="flex items-center p-3 w-full bg-sky-100 border-sky-200 border text-sky-700 rounded-md"
+                            >
+                                <p className="text-xs line-clamp-1">
+                                    {attachment.name}
+                                </p>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>
@@ -98,4 +95,4 @@ const BookImageForm = ({
     );
 }
 
-export default BookImageForm;
+export default BookAttachmentsForm;

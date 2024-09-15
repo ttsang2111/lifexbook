@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
-import { LayoutDashboard, ListCheck } from "lucide-react";
+import { File, LayoutDashboard, ListCheck } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import { IconBadge } from "@/components/icon-badge";
@@ -10,6 +10,7 @@ import BookNameForm from "./_components/book-name-form";
 import BookImageForm from "./_components/book-image-form";
 import { BookActions } from "./_components/book-actions";
 import BookDescriptionForm from "./_components/book-description-form";
+import BookAttachmentsForm from "./_components/book-attachments-form";
 
 const BookIdPage = async ({
     params
@@ -91,6 +92,16 @@ const BookIdPage = async ({
                     </div>
                     <div>
                         <BookChaptersForm initialData={book} bookId={book.id} />
+                    </div>
+
+                    <div className="flex items-center gap-x-2">
+                        <IconBadge icon={File} />
+                        <h2 className="text-xl">
+                            Attachments & Resources
+                        </h2>
+                    </div>
+                    <div>
+                        <BookAttachmentsForm initialData={book} bookId={book.id} />
                     </div>
                 </div>
             </div>
